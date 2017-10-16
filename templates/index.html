@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>Industry Research</title>
+      <!-- Bootstrap Core CSS -->
+      <link href="../static/vendor/startbootstrap-bare-3.3.7/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="../static/vendor/bootstrap-vertical-tabs-1.2.2/bootstrap.vertical-tabs.css">
+      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+      <!-- Custom styles for this template -->
+      <link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.css" rel="stylesheet">
+      <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.css" rel="stylesheet">
+      <!--Datatable Extentions-->
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.dataTables.min.css"/>
+      <!--D3-->
+      <link rel='stylesheet' href='../static/css/scatter.css'>
+      <!--
+         <link rel="stylesheet" href="//rawgithub.com/Caged/d3-tip/master/examples/example-styles.css">
+         -->
+      <!-- Custom CSS -->
+      <style>
+         body {
+         padding-top: 70px;
+         /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+         }
+         .sideways.tabs-left {
+         left: -140px;
+         }
+         .col-xs-1 {
+         width: 0;
+         }
+         td.highlight {
+         background-color: whitesmoke !important;
+         }
+         th { font-size: 10px; }
+         td { font-size: 10px; }
+         div.dataTables_wrapper {
+         width: 1200px;
+         margin: 0 auto;
+         }
+         .axis line {
+         fill: none;
+         stroke: rgba(0, 0, 0, 0.1);
+         shape-rendering: crispEdges;
+         }
+         .axisLine {
+         fill: none;
+         shape-rendering: crispEdges;
+         stroke: rgba(0, 0, 0, 0.5);
+         stroke-width: 2px;
+         }
+         rect {
+         fill: transparent;
+         shape-rendering: crispEdges;
+         }
+         .d3-tip {
+         line-height: 1.2;
+         padding: 8px;
+         background: rgba(0, 0, 0, 0.6);
+         color: #fff;
+         border-radius: 4px;
+         border: 0px;
+         font: 10px sans-serif;
+         }
+         /* Creates a small triangle extender for the tooltip */
+         .d3-tip:after {
+         box-sizing: border-box;
+         display: inline;
+         font-size: 10px;
+         width: 100%;
+         line-height: 1.2;
+         color: rgba(0, 0, 0, 0.6);
+         content: "\25BC";
+         position: absolute;
+         text-align: center;
+         }
+         /* Style northward tooltips specifically */
+         .d3-tip.n:after {
+         margin: -2px 0 0 0;
+         top: 100%;
+         left: 0;
+         }
+         .label circle {
+         opacity: 0
+         }
+      </style>
+      <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+   </head>
+   <body>
+      <!-- Navigation -->
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+         <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+               <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               </button>
+               <a class="navbar-brand" href="#">行业跟踪</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+               <ul class="nav navbar-nav">
+                  <li>
+                     <a href="#">通信</a>
+                  </li>
+                  <li>
+                     <a href="#">其他行业</a>
+                  </li>
+                  <li>
+                     <a href="#">其他行业</a>
+                  </li>
+               </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+         </div>
+         <!-- /.container -->
+      </nav>
+      <!-- Page Content -->
+      <div class="container">
+         <div class="row">
+            <div class="col-xs-1">
+               <!-- required for floating -->
+               <!-- Nav tabs -->
+               <ul class="nav nav-tabs tabs-left sideways">
+                  <li class="active"><a href="#price_chg" data-toggle="tab">价格变动</a></li>
+                  <li><a href="#profit" data-toggle="tab">盈利能力</a></li>
+                  <li><a href="#profit_pred" data-toggle="tab">盈利预测</a></li>
+                  <li><a href="#explorer" data-toggle="tab">数据分析</a></li>
+               </ul>
+            </div>
+            <div class="col-lg-11">
+               <!-- Tab panes -->
+               <div class="tab-content">
+                  <div class="tab-pane active" id="price_chg">
+                     <h3>各公司股价变动情况</h3>
+                     <p>以下所列公司为5G概念相关企业</p>
+                     <!-- /.row -->
+                     <div class="row">
+                          {{ chart_grid_script | safe }} 
+                          {{ chart_grid_div | safe }}
+                     </div>
+                  </div>
+                  <div class="tab-pane" id="profit">
+                     <table id="profit_tb" class="display compact" width="100%"></table>
+                  </div>
+                  <div class="tab-pane" id="profit_pred">
+                     <table id="profit_pred_tb" class="display compact" width="100%"></table>
+                  </div>
+                  <div class="tab-pane" id="explorer">
+                     <!--D3-->
+                     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+                     <script src="https://unpkg.com/d3fc/build/d3fc.min.js"></script>
+                     <script type='text/javascript' src='../static/vendor/d3-tip/d3-tip.js'></script>
+                     <script type='text/javascript' src='../static/js/scatter.js'></script>
+                     <script type='text/javascript'>
+                        scatter(
+                            scatter_variables={{scatter_variables|tojson}}, 
+                            id_name={{id_name|tojson}},
+                            data={{scatter_data|safe}})                        
+                     </script>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- /.row -->
+      </div>
+      <!-- /.container -->
+      <!-- jQuery Version 1.11.1 -->
+      <script src="../static/vendor/startbootstrap-bare-3.3.7/js/jquery.js"></script>
+      <!-- Bootstrap Core JavaScript -->
+      <script src="../static/vendor/startbootstrap-bare-3.3.7/js/bootstrap.min.js"></script>
+      <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.9.min.js"></script>
+      <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.9.min.js"></script>
+      <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+      <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+      <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.colVis.min.js"></script>
+      <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
+      <script type="text/javascript">
+         $(document).ready(function() {
+             var profit_pred_tb = $('#profit_pred_tb').DataTable( {
+                 data: {{ profit_pred_dataset | tojson}},
+                 columns: {{ profit_pred_columns | tojson}},
+                 "lengthMenu": [ [-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100] ],
+                 //fixedColumns:   {
+                 //  leftColumns: 1
+                 //},
+                 //fixedHeader: true,
+                 //responsive: true,
+                 //"scrollY": 600,
+                 //"scrollX": true,
+                 dom: 'Bfrtip',
+                 buttons: [
+                     {extend: 'colvis', text:'关闭|开启列'},
+                     'excel',
+                 ],
+             } );
+         
+         
+             $('#profit_pred_tb tbody')
+                 .on( 'mouseenter', 'td', function () {
+                 var colIdx = profit_pred_tb.cell(this).index().column;
+                 $( profit_pred_tb.cells().nodes() ).removeClass( 'highlight' );
+                 $( profit_pred_tb.column( colIdx ).nodes() ).addClass( 'highlight' );
+             } );
+         
+             // select rows
+             var selected = [];
+         
+             $('#profit_pred_tb tbody').on('click', 'tr', function () {
+                 var id = this.id;
+                 var index = $.inArray(id, selected);
+         
+                 if ( index === -1 ) {
+                     selected.push( id );
+                 } else {
+                         selected.splice( index, 1 );
+                 }
+         
+                 $(this).toggleClass('selected');
+             } );
+         
+         
+         } );
+         
+         $(document).ready(function() {
+             var profit_tb = $('#profit_tb').DataTable( {
+                 data: {{ profit_dataset | tojson}},
+                 columns: {{ profit_columns | tojson}},
+                 "lengthMenu": [ [-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100] ],
+                 //fixedColumns:   {
+                 //    leftColumns: 1
+                 //},
+                 //fixedHeader: true,
+                 //responsive: true,
+                 //"scrollY": 600,
+                 //"scrollX": true,
+                 dom: 'Bfrtip',
+                 buttons: [
+                     {extend: 'colvis', text:'关闭|开启列'},
+                     'excel',
+                 ],
+             } );
+         
+         
+             $('#profit_tb tbody')
+                 .on( 'mouseenter', 'td', function () {
+                 var colIdx = profit_tb.cell(this).index().column;
+                 $( profit_tb.cells().nodes() ).removeClass( 'highlight' );
+                 $( profit_tb.column( colIdx ).nodes() ).addClass( 'highlight' );
+             } );
+         
+             // select rows
+             var selected = [];
+         
+             $('#profit_tb tbody').on('click', 'tr', function () {
+                 var id = this.id;
+                 var index = $.inArray(id, selected);
+         
+                 if ( index === -1 ) {
+                     selected.push( id );
+                 } else {
+                         selected.splice( index, 1 );
+                 }
+         
+                 $(this).toggleClass('selected');
+             } );
+         
+         } );
+               
+      </script>
+   </body>
+</html>
